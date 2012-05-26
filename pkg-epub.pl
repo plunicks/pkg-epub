@@ -47,7 +47,7 @@ while (my $file = shift @ARGV) {
         my $chapter_id = $epub->copy_file($file, $basename, 'application/javascript');
         print "js file\n";
     } else {
-        my $label = basename($file, '.html', '.xhtml');
+        my $label = basename($file, '.html', '.xhtml', '.htm');
         $label =~ s/- 0*(\d+)$/$1/;
         my $chapter_id = $epub->copy_xhtml($file, $basename);
         print "epub file $file => $label | $basename | $chapter_id | $play_order\n";
