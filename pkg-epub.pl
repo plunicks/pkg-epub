@@ -40,6 +40,9 @@ while (my $file = shift @ARGV) {
     } elsif ($ext eq 'png') {
         my $chapter_id = $epub->copy_image($file, $basename, 'image/png');
         print "png file\n";
+    } elsif ($ext =~ /gif/i) {
+        my $chapter_id = $epub->copy_image($file, $basename, 'image/gif');
+        print "gif file\n";
     } elsif ($ext eq 'js') {
         my $chapter_id = $epub->copy_file($file, $basename, 'application/javascript');
         print "js file\n";
