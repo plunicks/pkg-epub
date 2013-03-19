@@ -4,19 +4,25 @@ use strict;
 use utf8;
 use encoding qw(utf8);
 use open qw(:encoding(utf8));
-
+use Getopt::Long qw(:config gnu_getopt no_ignore_case);
 use EBook::EPUB;
 use File::Basename qw(basename);
+
+my %opt;
+GetOptions(
+    'out|outfile|o=s' => \$opt{outfile},
+    'author|a=s@' => \$opt{authors},
+    'title|t=s' => \$opt{title},
+);
+die "Usage: @{[basename $0]} -o OUTFILE -a AUTHOR -t TITLE FILES\n" unless
+    $opt{outfile} && $opt{authors} && $opt{title};
 
 # Create EPUB object
 my $epub = EBook::EPUB->new;
 
-my ($outfile, $author, $title) = @ARGV;
-shift;shift;shift;
-
 # Set metadata: title/author/language/id
-$epub->add_title("$title");
-$epub->add_author("$author");
+$epub->add_title("$opt{title}");
+$epub->add_author("$_") foreach @{$opt{authors} || []};
 $epub->add_language('en'); # assumption for now
 # $epub->add_identifier('1440465908', 'ISBN');
 #$epub->add_translator(...);
@@ -62,7 +68,7 @@ while (my $file = shift @ARGV) {
     }
 }
 
-$epub->pack_zip("$outfile");
+$epub->pack_zip("$opt{outfile}");
 
 use Data::Dumper::Concise;
 print Dumper $epub;
