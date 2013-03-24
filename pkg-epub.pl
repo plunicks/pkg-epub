@@ -40,7 +40,7 @@ while (my $file = shift @ARGV) {
     if ($ext eq 'css') {
         my $chapter_id = $epub->copy_stylesheet($file, $basename);
         print "css file\n";
-    } elsif ($ext eq 'jpg') {
+    } elsif ($ext eq 'jpg' or $ext eq 'jpeg') {
         my $chapter_id = $epub->copy_image($file, $basename, 'image/jpeg');
         print "jpg file\n";
     } elsif ($ext eq 'png') {
