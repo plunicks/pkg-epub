@@ -13,6 +13,7 @@ GetOptions(
     'out|outfile|o=s' => \$opt{outfile},
     'author|a=s@' => \$opt{authors},
     'title|t=s' => \$opt{title},
+    'directory|C=s' => sub { chdir $_[1] },
 );
 die "Usage: @{[basename $0]} -o OUTFILE -a AUTHOR -t TITLE FILES\n" unless
     $opt{outfile} && $opt{authors} && $opt{title};
@@ -34,34 +35,34 @@ open my $fh, "files/list";
 while (my $file = shift @ARGV) {
     chomp $file;
 
-    my $basename = basename($file);
-    my ($base, $ext) = $basename =~ /^(.*)\.([^.]+)$/;
+    my $destfile = $file;
+    my ($base, $ext) = $file =~ /^(.*)\.([^.]+)$/;
 
     if ($ext eq 'css') {
-        my $chapter_id = $epub->copy_stylesheet($file, $basename);
+        my $chapter_id = $epub->copy_stylesheet($file, $destfile);
         print "css file\n";
     } elsif ($ext eq 'jpg' or $ext eq 'jpeg') {
-        my $chapter_id = $epub->copy_image($file, $basename, 'image/jpeg');
+        my $chapter_id = $epub->copy_image($file, $destfile, 'image/jpeg');
         print "jpg file\n";
     } elsif ($ext eq 'png') {
-        my $chapter_id = $epub->copy_image($file, $basename, 'image/png');
+        my $chapter_id = $epub->copy_image($file, $destfile, 'image/png');
         print "png file\n";
     } elsif ($ext =~ /gif/i) {
-        my $chapter_id = $epub->copy_image($file, $basename, 'image/gif');
+        my $chapter_id = $epub->copy_image($file, $destfile, 'image/gif');
         print "gif file\n";
     } elsif ($ext eq 'js') {
-        my $chapter_id = $epub->copy_file($file, $basename, 'application/javascript');
+        my $chapter_id = $epub->copy_file($file, $destfile, 'application/javascript');
         print "js file\n";
     } else {
         my $label = basename($file, '.html', '.xhtml', '.htm');
         $label =~ s/- 0*(\d+)$/$1/;
-        my $chapter_id = $epub->copy_xhtml($file, $basename);
-        print "epub file $file => $label | $basename | $chapter_id | $play_order\n";
+        my $chapter_id = $epub->copy_xhtml($file, $destfile);
+        print "epub file $file => $label | $destfile | $chapter_id | $play_order\n";
 
         my $navpoint = $epub->add_navpoint(
             label       => $label,
             id          => $chapter_id,
-            content     => $basename,
+            content     => $destfile,
             play_order  => $play_order++,
             );
         print "  $navpoint\n";
