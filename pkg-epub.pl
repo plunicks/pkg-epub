@@ -41,7 +41,6 @@ sub destfile {
 
 use File::Basename;
 my $play_order = 1;
-open my $fh, "files/list";
 # must past args in correct order
 while (my $file = shift @ARGV) {
     chomp $file;
