@@ -14,6 +14,7 @@ GetOptions(
     'author|a=s@' => \$opt{authors},
     'title|t=s' => \$opt{title},
     'directory|C=s' => sub { chdir $_[1] },
+    'strip-components=i' => \$opt{strip_components},
 );
 die "Usage: @{[basename $0]} -o OUTFILE -a AUTHOR -t TITLE FILES\n" unless
     $opt{outfile} && $opt{authors} && $opt{title};
@@ -28,6 +29,16 @@ $epub->add_language('en'); # assumption for now
 # $epub->add_identifier('1440465908', 'ISBN');
 #$epub->add_translator(...);
 
+# strip a number of leading path components from a path
+sub destfile {
+    my ($file) = @_;
+    my $stripn = $opt{strip_components};
+    for (1..$stripn) {
+        $file =~ s|^/?[^/]+/||;
+    }
+    return $file;
+}
+
 use File::Basename;
 my $play_order = 1;
 open my $fh, "files/list";
@@ -35,7 +46,7 @@ open my $fh, "files/list";
 while (my $file = shift @ARGV) {
     chomp $file;
 
-    my $destfile = $file;
+    my $destfile = destfile($file);
     my ($base, $ext) = $file =~ /^(.*)\.([^.]+)$/;
 
     if ($ext eq 'css') {
