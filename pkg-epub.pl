@@ -28,10 +28,25 @@ my $epub = EBook::EPUB->new;
 
 # Set metadata: title/author/language/id
 $epub->add_title("$opt{title}");
-$epub->add_author("$_") foreach @{$opt{authors} || []};
+foreach (@{$opt{authors} || []}) {
+    $epub->add_author(parse_name_pair($_))
+}
 $epub->add_language($opt{language});
 # $epub->add_identifier('1440465908', 'ISBN');
 #$epub->add_translator(...);
+
+# Parse a string containing a pair of names, such as "Lewis Carroll [Carroll,
+# Lewis]", where the second part is optional, and return a list of two strings,
+# such as ("Lewis Carroll", "Carroll, Lewis") or ("Lewis Carroll", undef).
+# Ignore any extra whitespace before the opening bracket and after the closing
+# bracket, but at least one space is required before the opening bracket.
+# Behavior is undefined if either name contains any square bracekets.
+# In scalar context, only the first name in the pair is returned.
+sub parse_name_pair {
+    my ($str) = @_;
+    my @names = ($str =~ /^(.*?)(?:\s+\[(.*)\]\s*)?$/);
+    return wantarray ? @names : $names[0];
+}
 
 # strip a number of leading path components from a path
 sub destfile {
