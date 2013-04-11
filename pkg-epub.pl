@@ -37,6 +37,7 @@ sub destfile {
     for (1..$stripn) {
         $file =~ s|^/?[^/]+/||;
     }
+    $file =~ s|^/||; # always strip leading '/' (EPUB paths must be relative)
     return $file;
 }
 
