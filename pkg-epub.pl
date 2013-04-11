@@ -8,11 +8,14 @@ use Getopt::Long qw(:config gnu_getopt no_ignore_case);
 use EBook::EPUB;
 use File::Basename qw(basename);
 
-my %opt;
+my %opt = (
+    language => 'en',
+);
 GetOptions(
     'out|outfile|o=s' => \$opt{outfile},
     'author|a=s@' => \$opt{authors},
     'title|t=s' => \$opt{title},
+    'language|l=s' => \$opt{language},
     'directory|C=s' => sub { chdir $_[1] },
     'strip-components=i' => \$opt{strip_components},
     'debug' => \$opt{debug},
@@ -26,7 +29,7 @@ my $epub = EBook::EPUB->new;
 # Set metadata: title/author/language/id
 $epub->add_title("$opt{title}");
 $epub->add_author("$_") foreach @{$opt{authors} || []};
-$epub->add_language('en'); # assumption for now
+$epub->add_language($opt{language});
 # $epub->add_identifier('1440465908', 'ISBN');
 #$epub->add_translator(...);
 
