@@ -15,6 +15,7 @@ GetOptions(
     'title|t=s' => \$opt{title},
     'directory|C=s' => sub { chdir $_[1] },
     'strip-components=i' => \$opt{strip_components},
+    'debug' => \$opt{debug},
 );
 die "Usage: @{[basename $0]} -o OUTFILE -a AUTHOR -t TITLE FILES\n" unless
     $opt{outfile} && $opt{authors} && $opt{title};
@@ -81,5 +82,7 @@ while (my $file = shift @ARGV) {
 
 $epub->pack_zip("$opt{outfile}");
 
-use Data::Dumper::Concise;
-print Dumper $epub;
+if ($opt{debug}) {
+    use Data::Dumper::Concise;
+    print Dumper $epub;
+}
