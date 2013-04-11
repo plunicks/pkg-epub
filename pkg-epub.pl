@@ -55,24 +55,24 @@ while (my $file = shift @ARGV) {
 
     if ($ext eq 'css') {
         my $chapter_id = $epub->copy_stylesheet($file, $destfile);
-        print "css file\n";
+        print "css file\n" if $opt{debug};
     } elsif ($ext eq 'jpg' or $ext eq 'jpeg') {
         my $chapter_id = $epub->copy_image($file, $destfile, 'image/jpeg');
-        print "jpg file\n";
+        print "jpg file\n" if $opt{debug};
     } elsif ($ext eq 'png') {
         my $chapter_id = $epub->copy_image($file, $destfile, 'image/png');
-        print "png file\n";
+        print "png file\n" if $opt{debug};
     } elsif ($ext =~ /gif/i) {
         my $chapter_id = $epub->copy_image($file, $destfile, 'image/gif');
-        print "gif file\n";
+        print "gif file\n" if $opt{debug};
     } elsif ($ext eq 'js') {
         my $chapter_id = $epub->copy_file($file, $destfile, 'application/javascript');
-        print "js file\n";
+        print "js file\n" if $opt{debug};
     } else {
         my $label = basename($file, '.html', '.xhtml', '.htm');
         $label =~ s/- 0*(\d+)$/$1/;
         my $chapter_id = $epub->copy_xhtml($file, $destfile);
-        print "epub file $file => $label | $destfile | $chapter_id | $play_order\n";
+        print "epub file $file => $label | $destfile | $chapter_id | $play_order\n" if $opt{debug};
 
         my $navpoint = $epub->add_navpoint(
             label       => $label,
@@ -80,7 +80,7 @@ while (my $file = shift @ARGV) {
             content     => $destfile,
             play_order  => $play_order++,
             );
-        print "  $navpoint\n";
+        print "  $navpoint\n" if $opt{debug};
     }
 }
 
