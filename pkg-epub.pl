@@ -32,8 +32,6 @@ foreach (@{$opt{authors} || []}) {
     $epub->add_author(parse_name_pair($_))
 }
 $epub->add_language($opt{language});
-# $epub->add_identifier('1440465908', 'ISBN');
-#$epub->add_translator(...);
 
 # Parse a string containing a pair of names, such as "Lewis Carroll [Carroll,
 # Lewis]", where the second part is optional, and return a list of two strings,
