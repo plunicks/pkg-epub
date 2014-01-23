@@ -7,6 +7,22 @@ use open qw(:encoding(utf8));
 use Getopt::Long qw(:config gnu_getopt no_ignore_case);
 use EBook::EPUB;
 use File::Basename qw(basename);
+use HTML::Parser;
+
+sub extract_title {
+    my ($filename) = @_;
+
+    my ($current_tag, $title);
+    my $start_tag = sub { $current_tag = $_[0] };
+    my $text = sub { $title .= $_[1] if $current_tag eq 'title' };
+    my $p = HTML::Parser->new(start_h => [$start_tag, 'tagname, attr'],
+                              text_h => [$text, 'event, text']);
+    $p->parse_file($filename);
+
+    $title =~ s/^\s*//s;
+    $title =~ s/\s*$//s;
+    return $title;
+}
 
 my %opt = (
     language => 'en',
@@ -82,13 +98,16 @@ while (my $file = shift @ARGV) {
         my $chapter_id = $epub->copy_file($file, $destfile, 'application/javascript');
         print "js file\n" if $opt{debug};
     } else {
-        my $label = basename($file, '.html', '.xhtml', '.htm');
-        $label =~ s/- 0*(\d+)$/$1/;
+        my $title = eval { extract_title $file };
+        unless ($title) {
+            $title = basename($file, '.html', '.xhtml', '.htm');
+            $title =~ s/- 0*(\d+)$/$1/;
+        }
         my $chapter_id = $epub->copy_xhtml($file, $destfile);
-        print "epub file $file => $label | $destfile | $chapter_id | $play_order\n" if $opt{debug};
+        print "epub file $file => $title | $destfile | $chapter_id | $play_order\n" if $opt{debug};
 
         my $navpoint = $epub->add_navpoint(
-            label       => $label,
+            label       => $title,
             id          => $chapter_id,
             content     => $destfile,
             play_order  => $play_order++,
