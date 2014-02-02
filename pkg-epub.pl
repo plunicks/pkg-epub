@@ -119,6 +119,6 @@ while (my $file = shift @ARGV) {
 $epub->pack_zip("$opt{outfile}");
 
 if ($opt{debug}) {
-    use Data::Dumper::Concise;
-    print Dumper $epub;
+    require Data::Dumper::Concise;
+    print Data::Dumper::Concise::Dumper($epub);
 }
