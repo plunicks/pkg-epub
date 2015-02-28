@@ -82,19 +82,19 @@ while (my $file = shift @ARGV) {
     my $destfile = destfile($file);
     my ($base, $ext) = $file =~ /^(.*)\.([^.]+)$/;
 
-    if ($ext eq 'css') {
+    if ($ext =~ /^css$/i) {
         my $chapter_id = $epub->copy_stylesheet($file, $destfile);
         print "css file\n" if $opt{debug};
-    } elsif ($ext eq 'jpg' or $ext eq 'jpeg') {
+    } elsif ($ext =~ /^jpe?g$/i) {
         my $chapter_id = $epub->copy_image($file, $destfile, 'image/jpeg');
         print "jpg file\n" if $opt{debug};
-    } elsif ($ext eq 'png') {
+    } elsif ($ext =~ /^png$/i) {
         my $chapter_id = $epub->copy_image($file, $destfile, 'image/png');
         print "png file\n" if $opt{debug};
-    } elsif ($ext =~ /gif/i) {
+    } elsif ($ext =~ /^gif$/i) {
         my $chapter_id = $epub->copy_image($file, $destfile, 'image/gif');
         print "gif file\n" if $opt{debug};
-    } elsif ($ext eq 'js') {
+    } elsif ($ext =~ /^js$/i) {
         my $chapter_id = $epub->copy_file($file, $destfile, 'application/javascript');
         print "js file\n" if $opt{debug};
     } else {
